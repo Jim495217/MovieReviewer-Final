@@ -1,35 +1,50 @@
-import { useState } from "react";
-import { searchMovies } from "../services/tmdbApi";
+import {useState} from "react";
+import {searchMovies} from "../api/tmdb";
 import MovieCard from "../components/MovieCard";
 
-function SearchPage() {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+function SearchPage(){
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const data = await searchMovies(query);
-    setResults(data.results);
-  };
+const [query,setQuery]=useState("");
+const [results,setResults]=useState([]);
 
-  return (
-    <div>
-      <form onSubmit={handleSearch}>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search movies..."
-        />
-        <button type="submit">Search</button>
-      </form>
+async function handleSearch(e){
 
-      <div className="grid">
-        {results.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
-    </div>
-  );
+e.preventDefault();
+
+const data = await searchMovies(query);
+
+setResults(data.results);
+
+}
+
+return(
+
+<div>
+
+<form onSubmit={handleSearch}>
+
+<input
+value={query}
+onChange={(e)=>setQuery(e.target.value)}
+placeholder="Search movies"
+/>
+
+<button>Search</button>
+
+</form>
+
+<div className="grid">
+
+{results.map(movie=>(
+<MovieCard key={movie.id} movie={movie}/>
+))}
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default SearchPage;

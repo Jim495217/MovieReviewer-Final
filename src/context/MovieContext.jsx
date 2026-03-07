@@ -1,33 +1,42 @@
-import { createContext, useContext, useState } from "react";
+import {createContext,useContext,useState} from "react";
 
 const MovieContext = createContext();
 
-export function MovieProvider({ children }) {
-  const [favorites, setFavorites] = useState([]);
-  const [ratings, setRatings] = useState({});
+export function MovieProvider({children}){
 
-  const addFavorite = (movie) => {
-    setFavorites((prev) =>
-      prev.find((m) => m.id === movie.id) ? prev : [...prev, movie]
-    );
-  };
+const [favorites,setFavorites] = useState([]);
+const [reviews,setReviews] = useState([]);
 
-  const submitRating = (movieId, categoryRatings) => {
-    setRatings((prev) => ({
-      ...prev,
-      [movieId]: categoryRatings,
-    }));
-  };
-
-  return (
-    <MovieContext.Provider
-      value={{ favorites, addFavorite, ratings, submitRating }}
-    >
-      {children}
-    </MovieContext.Provider>
-  );
+function addFavorite(movie){
+setFavorites(prev=>[...prev,movie]);
 }
 
-export function useMovies() {
-  return useContext(MovieContext);
+function removeFavorite(id){
+setFavorites(prev=>prev.filter(m=>m.id!==id));
 }
+
+function addReview(review){
+setReviews(prev=>[...prev,review]);
+}
+
+return(
+
+<MovieContext.Provider
+value={{
+favorites,
+reviews,
+addFavorite,
+removeFavorite,
+addReview
+}}
+>
+
+{children}
+
+</MovieContext.Provider>
+
+);
+
+}
+
+export const useMovies=()=>useContext(MovieContext);
