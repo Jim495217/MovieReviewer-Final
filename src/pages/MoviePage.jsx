@@ -68,21 +68,45 @@ export default function MoviePage(){
 
       {/* REVIEWS */}
 
-      <h2 style={{marginTop:"40px"}}>User Reviews</h2>
+<h2 style={{marginTop:"40px"}}>User Reviews</h2>
 
-      {reviews.length === 0 && <p>No reviews yet.</p>}
+{reviews.length === 0 && <p>No reviews yet.</p>}
 
-      {reviews.map((r,i)=>(
-        <div key={i} style={{marginTop:"15px"}}>
+{reviews.map((r,i)=>{
 
-          <strong>{"★".repeat(r.rating)}</strong>
+  const avg = (
+    (Number(r.story) + Number(r.style) + Number(r.music)) / 3
+  ).toFixed(1)
 
-          <p>{r.text}</p>
+  return(
 
-          <small>{r.date}</small>
+    <div
+      key={i}
+      style={{
+        marginTop:"20px",
+        padding:"15px",
+        border:"1px solid #444",
+        borderRadius:"8px"
+      }}
+    >
 
-        </div>
-      ))}
+      <strong>Average Rating: ⭐ {avg} / 5</strong>
+
+      <p>Story: {r.story} / 5</p>
+      <p>Style: {r.style} / 5</p>
+      <p>Music: {r.music} / 5</p>
+
+      <p style={{marginTop:"10px"}}>
+        {r.text}
+      </p>
+
+      <small>{r.date}</small>
+
+    </div>
+
+  )
+
+})}
 
     </div>
 

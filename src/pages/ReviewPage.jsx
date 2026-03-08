@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useParams } from "react-router-dom"
-import StarRating from "../components/StarRating"
 
 export default function ReviewPage(){
 
   const { id } = useParams()
 
-  const [rating,setRating] = useState(3)
+  const [story,setStory] = useState(3)
+  const [style,setStyle] = useState(3)
+  const [music,setMusic] = useState(3)
   const [text,setText] = useState("")
   const [message,setMessage] = useState("")
 
@@ -18,7 +19,6 @@ export default function ReviewPage(){
     }
 
     const stored = localStorage.getItem("reviews")
-
     const reviews = stored ? JSON.parse(stored) : {}
 
     if(!reviews[id]){
@@ -26,15 +26,19 @@ export default function ReviewPage(){
     }
 
     reviews[id].push({
-      rating: rating,
-      text: text,
+      story,
+      style,
+      music,
+      text,
       date: new Date().toLocaleDateString()
     })
 
     localStorage.setItem("reviews", JSON.stringify(reviews))
 
     setText("")
-    setRating(3)
+    setStory(3)
+    setStyle(3)
+    setMusic(3)
 
     setMessage("Review saved successfully!")
   }
@@ -45,17 +49,42 @@ export default function ReviewPage(){
 
       <h1>Write Review</h1>
 
-      <StarRating
-        rating={rating}
-        setRating={setRating}
+      <h3>Story</h3>
+      <input
+        type="range"
+        min="1"
+        max="5"
+        value={story}
+        onChange={(e)=>setStory(e.target.value)}
       />
+      <p>{story} / 5</p>
 
-      <br/>
+      <h3>Style</h3>
+      <input
+        type="range"
+        min="1"
+        max="5"
+        value={style}
+        onChange={(e)=>setStyle(e.target.value)}
+      />
+      <p>{style} / 5</p>
+
+      <h3>Music</h3>
+      <input
+        type="range"
+        min="1"
+        max="5"
+        value={music}
+        onChange={(e)=>setMusic(e.target.value)}
+      />
+      <p>{music} / 5</p>
+
+      <h3>General Review</h3>
 
       <textarea
         value={text}
         onChange={(e)=>setText(e.target.value)}
-        placeholder="Write your review..."
+        placeholder="Write your thoughts about the movie..."
       />
 
       <br/><br/>
