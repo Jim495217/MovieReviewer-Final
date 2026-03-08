@@ -7,12 +7,26 @@ export default function RegisterPage(){
 
   const [username,setUsername] = useState("");
   const [password,setPassword] = useState("");
+  const [message,setMessage] = useState("");
+  const [error,setError] = useState("");
 
   function submit(e){
 
     e.preventDefault();
 
-    register(username,password);
+    try{
+      register(username,password);
+
+      setMessage("Account successfully created! You can now log in.");
+      setError("");
+
+      setUsername("");
+      setPassword("");
+
+    }catch(err){
+      setError(err.message);
+      setMessage("");
+    }
 
   }
 
@@ -22,10 +36,14 @@ export default function RegisterPage(){
 
       <h1>Register</h1>
 
+      {message && <p style={{color:"green"}}>{message}</p>}
+      {error && <p style={{color:"red"}}>{error}</p>}
+
       <form onSubmit={submit}>
 
         <input
           placeholder="Username"
+          value={username}
           onChange={e=>setUsername(e.target.value)}
         />
 
@@ -34,6 +52,7 @@ export default function RegisterPage(){
         <input
           type="password"
           placeholder="Password"
+          value={password}
           onChange={e=>setPassword(e.target.value)}
         />
 

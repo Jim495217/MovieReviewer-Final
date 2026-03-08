@@ -6,7 +6,7 @@ function createToken(user) {
   const payload = {
     username: user.username,
     role: user.role,
-    exp: Date.now() + 60 * 60 * 1000 // 1 hour
+    exp: Date.now() + 60 * 60 * 1000 // 1 hour expiration
   }
 
   return btoa(JSON.stringify(payload))
@@ -20,20 +20,30 @@ function decodeToken(token) {
   }
 }
 
+// Basic input sanitization (XSS protection)
+function sanitizeInput(input) {
+  return input.replace(/[<>]/g, "")
+}
+
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null)
 
   useEffect(() => {
 
-    const token = localStorage.getItem("token")
+    // Create CSRF token if it doesn't exist
+    if (!sessionStorage.getItem("csrfToken")) {
+      sessionStorage.setItem("csrfToken", crypto.randomUUID())
+    }
+
+    const token = sessionStorage.getItem("token")
 
     if (!token) return
 
     const decoded = decodeToken(token)
 
     if (!decoded || decoded.exp < Date.now()) {
-      localStorage.removeItem("token")
+      sessionStorage.removeItem("token")
       return
     }
 
@@ -46,10 +56,16 @@ export function AuthProvider({ children }) {
 
   const login = (username, password) => {
 
+    if (!username || !password) {
+      throw new Error("All fields are required")
+    }
+
+    const cleanUsername = sanitizeInput(username)
+
     const users = JSON.parse(localStorage.getItem("users")) || []
 
     const foundUser = users.find(
-      (u) => u.username === username && u.password === password
+      (u) => u.username === cleanUsername && u.password === password
     )
 
     if (!foundUser) {
@@ -58,7 +74,7 @@ export function AuthProvider({ children }) {
 
     const token = createToken(foundUser)
 
-    localStorage.setItem("token", token)
+    sessionStorage.setItem("token", token)
 
     setUser({
       username: foundUser.username,
@@ -68,14 +84,20 @@ export function AuthProvider({ children }) {
 
   const register = (username, password) => {
 
+    if (!username || !password) {
+      throw new Error("All fields are required")
+    }
+
+    const cleanUsername = sanitizeInput(username)
+
     const users = JSON.parse(localStorage.getItem("users")) || []
 
-    if (users.find((u) => u.username === username)) {
+    if (users.find((u) => u.username === cleanUsername)) {
       throw new Error("User already exists")
     }
 
     const newUser = {
-      username,
+      username: cleanUsername,
       password,
       role: "user"
     }
@@ -86,7 +108,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = () => {
-    localStorage.removeItem("token")
+    sessionStorage.removeItem("token")
     setUser(null)
   }
 
