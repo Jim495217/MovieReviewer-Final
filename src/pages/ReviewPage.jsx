@@ -1,28 +1,23 @@
-import {useMovies} from "../context/MovieContext";
-import {useParams} from "react-router-dom";
-import ReviewCard from "../components/ReviewCard";
+import { useState } from "react";
+import RatingSlider from "../components/RatingSlider";
 
-function ReviewPage(){
+export default function ReviewPage() {
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
 
-const {id}=useParams();
-const {reviews}=useMovies();
+  function submitReview() {
+    alert("Review submitted");
+  }
 
-const movieReviews = reviews.filter(r=>r.movieId===id);
+  return (
+    <div>
+      <h1>Write Review</h1>
 
-return(
+      <RatingSlider rating={rating} setRating={setRating} />
 
-<div>
+      <textarea onChange={(e) => setText(e.target.value)} />
 
-<h1>Reviews</h1>
-
-{movieReviews.map((r,i)=>(
-<ReviewCard key={i} review={r}/>
-))}
-
-</div>
-
-);
-
+      <button onClick={submitReview}>Submit</button>
+    </div>
+  );
 }
-
-export default ReviewPage;

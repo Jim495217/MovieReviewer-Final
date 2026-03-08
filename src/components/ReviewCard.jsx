@@ -1,17 +1,8 @@
-function ReviewCard({review}){
-
-return(
-
-<div>
-
-<h4>{review.user}</h4>
-
-<p>{review.comment}</p>
-
-</div>
-
-);
-
+export default function ReviewCard({ review }) {
+  return (
+    <div>
+      <p>{review.text}</p>
+      <strong>{review.rating}/10</strong>
+    </div>
+  );
 }
-
-export default ReviewCard;

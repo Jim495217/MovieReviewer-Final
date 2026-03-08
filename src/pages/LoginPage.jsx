@@ -1,43 +1,50 @@
-import {useState} from "react";
-import {useAuth} from "../context/AuthContext";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
-function LoginPage(){
+export default function LoginPage(){
 
-const [username,setUsername]=useState("");
+  const { login } = useAuth();
 
-const {login}=useAuth();
+  const [username,setUsername] = useState("");
+  const [password,setPassword] = useState("");
 
-const navigate = useNavigate();
+  function submit(e){
 
-function handleSubmit(e){
+    e.preventDefault();
 
-e.preventDefault();
+    login(username,password);
 
-login(username);
+  }
 
-navigate("/");
+  return(
+
+    <div className="container">
+
+      <h1>Login</h1>
+
+      <form onSubmit={submit}>
+
+        <input
+          placeholder="Username"
+          onChange={e=>setUsername(e.target.value)}
+        />
+
+        <br/><br/>
+
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={e=>setPassword(e.target.value)}
+        />
+
+        <br/><br/>
+
+        <button>Login</button>
+
+      </form>
+
+    </div>
+
+  )
 
 }
-
-return(
-
-<form onSubmit={handleSubmit}>
-
-<h1>Login</h1>
-
-<input
-placeholder="username"
-value={username}
-onChange={(e)=>setUsername(e.target.value)}
-/>
-
-<button>Login</button>
-
-</form>
-
-);
-
-}
-
-export default LoginPage;

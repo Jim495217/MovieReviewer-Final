@@ -1,34 +1,51 @@
-import {useParams} from "react-router-dom";
-import {useEffect,useState} from "react";
-import {getMovieDetails} from "../api/tmdb";
+import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getMovie } from "../api/tmdb";
 
-function MoviePage(){
+const IMG = "https://image.tmdb.org/t/p/w500";
 
-const {id}=useParams();
-const [movie,setMovie]=useState(null);
+export default function MoviePage(){
 
-useEffect(()=>{
+  const { id } = useParams();
 
-getMovieDetails(id).then(setMovie);
+  const [movie,setMovie] = useState(null);
 
-},[id]);
+  useEffect(()=>{
 
-if(!movie) return <h2>Loading...</h2>;
+    getMovie(id).then(setMovie);
 
-return(
+  },[id]);
 
-<div>
+  if(!movie) return <p>Loading...</p>;
 
-<h1>{movie.title}</h1>
+  return(
 
-<img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
+    <div className="movie-detail">
 
-<p>{movie.overview}</p>
+      <img src={IMG + movie.poster_path}/>
 
-</div>
+      <div>
 
-);
+        <h1>{movie.title}</h1>
+
+        <p style={{marginTop:"10px"}}>
+          ⭐ {movie.vote_average}
+        </p>
+
+        <p style={{marginTop:"20px"}}>
+          {movie.overview}
+        </p>
+
+        <br/>
+
+        <Link to={`/review/${movie.id}`}>
+          <button>Write Review</button>
+        </Link>
+
+      </div>
+
+    </div>
+
+  )
 
 }
-
-export default MoviePage;

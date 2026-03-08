@@ -1,59 +1,39 @@
-import {createContext,useContext,useState,useEffect} from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
-export function AuthProvider({children}){
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
 
-const [user,setUser] = useState(null);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) setUser({ token });
+  }, []);
 
-useEffect(()=>{
+  function login(username, password) {
+    if (username && password) {
+      const fakeToken = "jwt_token_example";
+      localStorage.setItem("token", fakeToken);
+      setUser({ username, token: fakeToken });
+    }
+  }
 
-const token = localStorage.getItem("token");
+  function register(username, password) {
+    login(username, password);
+  }
 
-if(token){
+  function logout() {
+    localStorage.removeItem("token");
+    setUser(null);
+  }
 
-setUser(JSON.parse(atob(token)));
-
+  return (
+    <AuthContext.Provider value={{ user, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-},[]);
-
-function login(username,role="audience"){
-
-const token = btoa(JSON.stringify({username,role}));
-
-localStorage.setItem("token",token);
-
-setUser({username,role});
-
+export function useAuth() {
+  return useContext(AuthContext);
 }
-
-function logout(){
-
-localStorage.removeItem("token");
-
-setUser(null);
-
-}
-
-return(
-
-<AuthContext.Provider
-value={{
-user,
-login,
-logout,
-isAuthenticated: !!user,
-isAdmin:()=>user?.role==="admin"
-}}
->
-
-{children}
-
-</AuthContext.Provider>
-
-);
-
-}
-
-export const useAuth=()=>useContext(AuthContext);

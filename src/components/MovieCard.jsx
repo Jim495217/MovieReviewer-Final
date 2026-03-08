@@ -1,26 +1,21 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function MovieCard({movie}){
+const IMG = "https://image.tmdb.org/t/p/w500";
 
-return(
+export default function MovieCard({ movie }) {
 
-<div className="movie-card">
+  return (
+    <Link to={`/movie/${movie.id}`} className="movie-card">
 
-<Link to={`/movie/${movie.id}`}>
+      <img
+        src={IMG + movie.poster_path}
+        alt={movie.title}
+      />
 
-<img
-src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-alt={movie.title}
-/>
+      <div className="movie-title">
+        {movie.title}
+      </div>
 
-<h3>{movie.title}</h3>
-
-</Link>
-
-</div>
-
-);
-
+    </Link>
+  );
 }
-
-export default MovieCard;

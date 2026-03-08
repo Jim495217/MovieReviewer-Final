@@ -1,26 +1,19 @@
-const API="https://api.themoviedb.org/3";
-const KEY=import.meta.env.VITE_TMDB_API_KEY;
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const BASE = "https://api.themoviedb.org/3";
 
-export async function getPopularMovies(){
-
-const res = await fetch(`${API}/movie/popular?api_key=${KEY}`);
-
-return res.json();
-
+export async function getPopularMovies() {
+  const res = await fetch(`${BASE}/movie/popular?api_key=${API_KEY}`);
+  return res.json();
 }
 
-export async function searchMovies(query){
-
-const res = await fetch(`${API}/search/movie?api_key=${KEY}&query=${query}`);
-
-return res.json();
-
+export async function getMovie(id) {
+  const res = await fetch(`${BASE}/movie/${id}?api_key=${API_KEY}`);
+  return res.json();
 }
 
-export async function getMovieDetails(id){
-
-const res = await fetch(`${API}/movie/${id}?api_key=${KEY}`);
-
-return res.json();
-
+export async function searchMovies(query) {
+  const res = await fetch(
+    `${BASE}/search/movie?api_key=${API_KEY}&query=${query}`
+  );
+  return res.json();
 }

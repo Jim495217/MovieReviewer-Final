@@ -1,38 +1,50 @@
-import {useState} from "react";
-import {useAuth} from "../context/AuthContext";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
-function RegisterPage(){
+export default function RegisterPage(){
 
-const [username,setUsername]=useState("");
+  const { register } = useAuth();
 
-const {login}=useAuth();
+  const [username,setUsername] = useState("");
+  const [password,setPassword] = useState("");
 
-function handleSubmit(e){
+  function submit(e){
 
-e.preventDefault();
+    e.preventDefault();
 
-login(username);
+    register(username,password);
+
+  }
+
+  return(
+
+    <div className="container">
+
+      <h1>Register</h1>
+
+      <form onSubmit={submit}>
+
+        <input
+          placeholder="Username"
+          onChange={e=>setUsername(e.target.value)}
+        />
+
+        <br/><br/>
+
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={e=>setPassword(e.target.value)}
+        />
+
+        <br/><br/>
+
+        <button>Create Account</button>
+
+      </form>
+
+    </div>
+
+  )
 
 }
-
-return(
-
-<form onSubmit={handleSubmit}>
-
-<h1>Register</h1>
-
-<input
-value={username}
-onChange={(e)=>setUsername(e.target.value)}
-placeholder="username"
-/>
-
-<button>Register</button>
-
-</form>
-
-);
-
-}
-
-export default RegisterPage;

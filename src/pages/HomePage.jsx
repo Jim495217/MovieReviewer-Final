@@ -1,37 +1,38 @@
-import {useEffect,useState} from "react";
-import {getPopularMovies} from "../api/tmdb";
+import { useEffect, useState } from "react";
+import { getPopularMovies } from "../api/tmdb";
 import MovieCard from "../components/MovieCard";
 
-function HomePage(){
+export default function HomePage() {
 
-const [movies,setMovies]=useState([]);
+  const [movies, setMovies] = useState([]);
 
-useEffect(()=>{
+  useEffect(() => {
 
-getPopularMovies().then(data=>{
-setMovies(data.results);
-});
+    async function load() {
+      const data = await getPopularMovies();
+      setMovies(data.results);
+    }
 
-},[]);
+    load();
 
-return(
+  }, []);
 
-<div>
+  return (
+    <div className="container">
 
-<h1>Popular Movies</h1>
+      <h1>Popular Movies</h1>
 
-<div className="grid">
+      <div className="movies-grid">
 
-{movies.map(movie=>(
-<MovieCard key={movie.id} movie={movie}/>
-))}
+        {movies.map(movie => (
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+          />
+        ))}
 
-</div>
+      </div>
 
-</div>
-
-);
-
+    </div>
+  );
 }
-
-export default HomePage;
