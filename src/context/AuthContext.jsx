@@ -6,7 +6,7 @@ function createToken(user) {
   const payload = {
     username: user.username,
     role: user.role,
-    exp: Date.now() + 60 * 60 * 1000 // 1 hour expiration
+    exp: Date.now() + 60 * 60 * 1000
   }
 
   return btoa(JSON.stringify(payload))
@@ -20,9 +20,9 @@ function decodeToken(token) {
   }
 }
 
-// Basic input sanitization (XSS protection)
+
 function sanitizeInput(input) {
-  return input.replace(/[<>]/g, "")
+  return input.replace(/[<>"'`]/g, "")
 }
 
 export function AuthProvider({ children }) {
@@ -44,9 +44,11 @@ export function AuthProvider({ children }) {
 
     if (!decoded || decoded.exp < Date.now()) {
       sessionStorage.removeItem("token")
+      setUser(null)
       return
     }
 
+    // Restore user from token
     setUser({
       username: decoded.username,
       role: decoded.role
