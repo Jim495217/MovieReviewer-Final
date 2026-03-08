@@ -1,7 +1,13 @@
 🎬 MovieReviewer
-📌 Project Description & Purpose
+📌 Project Description & Problem Statement
 
-MovieReviewer is a Single Page Application (SPA) built with React and Vite that allows users to browse movies and rate them based on audience-focused categories. Unlike traditional critic-heavy platforms, this application emphasizes audience-driven ratings across multiple categories such as:
+MovieReviewer is a Single Page Application (SPA) built with React and Vite that allows users to browse movies and rate them based on audience-focused categories.
+
+Many movie platforms rely heavily on professional critic reviews. MovieReviewer focuses instead on audience-driven ratings, allowing users to evaluate films based on categories that everyday viewers care about.
+
+Users can explore movies, view details, and rate films based on multiple attributes.
+
+Rating Categories
 
 🎭 Acting
 
@@ -13,21 +19,25 @@ MovieReviewer is a Single Page Application (SPA) built with React and Vite that 
 
 ⭐ Overall Rating
 
-🎯 Purpose
+🎯 Purpose of the Project
 
-The goal of this project is to:
+This project was developed to:
 
-Practice building a modern React SPA
+Practice building a modern React Single Page Application
 
 Implement component-based architecture
 
-Manage state effectively
+Manage application state using React Context
+
+Implement user authentication
 
 Consume external APIs
 
+Implement secure frontend practices
+
 Deploy a production-ready web application
 
-🛠 Technologies Used
+🛠 Technology Stack
 Frontend
 
 React
@@ -38,7 +48,21 @@ JavaScript (ES6+)
 
 CSS
 
-React Router DOM (for routing)
+React Router DOM
+
+Authentication & Security
+
+Custom JWT-style authentication
+
+Protected routes
+
+Role-based access control
+
+Basic XSS protection
+
+Basic CSRF token protection
+
+Secure token storage using sessionStorage
 
 Development Tools
 
@@ -46,58 +70,118 @@ Node.js
 
 npm
 
-Git & GitHub
+Git
+
+GitHub
 
 VS Code
 
+Testing
+
+Jest
+
+React Testing Library
+
 Deployment
 
-Vercel (or Netlify — update to match yours)
+Vercel (or Netlify if you used that)
 
-⚙️ Setup & Installation Instructions
+⚙️ Setup & Installation
 
 To run this project locally:
 
-1️⃣ Clone the repository
+1️⃣ Clone the Repository
 git clone https://github.com/YOUR_USERNAME/MovieReviewer.git
 cd MovieReviewer
-2️⃣ Install dependencies
+2️⃣ Install Dependencies
 npm install
-3️⃣ Start development server
+3️⃣ Start the Development Server
 npm run dev
 
-The application will run at:
+The app will run at:
 
 http://localhost:5173
-4️⃣ Build for production
+4️⃣ Build for Production
 npm run build
-🗺 Available Routes & Features
+🗺 Application Routes
 Route	Description
-/	Home page displaying featured or trending movies
+/	Home page displaying popular movies
 /movie/:id	Individual movie details page
-/login	User authentication page
-/register	Create a new user account
+/login	User login page
+/register	Account creation page
+/favorites	User saved movies
 /admin	Admin dashboard (protected route)
-🔐 Authentication Features
+🔐 Authentication System
 
-User login & registration
+The application implements a JWT-style authentication system using React Context.
 
-Role-based access control
+Features
 
-Protected admin routes
+User registration
+
+User login
+
+Logout functionality
+
+Protected routes
+
+Role-based authorization (admin access)
+
+Token expiration handling
+
+Token Structure
+
+A token is generated when a user logs in and contains:
+
+{
+  username,
+  role,
+  expiration
+}
+
+The token is stored securely using:
+
+sessionStorage
+Security Measures
+
+The application includes several frontend security practices:
+
+XSS Protection
+
+User inputs are sanitized
+
+React automatically escapes HTML content
+
+CSRF Protection
+
+A CSRF token is generated using crypto.randomUUID()
+
+Token stored in sessionStorage
+
+Secure Token Storage
+
+Authentication tokens stored in sessionStorage
+
+Tokens expire automatically
 
 ⭐ Rating System
 
-Category-based rating system
+The rating system allows users to evaluate movies based on multiple criteria.
 
-Overall score calculation
+Features
+
+Category-based ratings
+
+Overall rating calculation
 
 Audience-focused feedback
 
-🔌 API Documentation & Dependencies
-External API Used
+Future versions may store ratings in a database.
 
-Example (update if different):
+🔌 API Integration
+External API
+
+The application integrates with:
 
 The Movie Database (TMDB) API
 
@@ -105,27 +189,53 @@ Base URL:
 
 https://api.themoviedb.org/3/
 
-Sample endpoint:
+Example endpoint:
 
 GET /movie/popular
+Environment Variable
 
-API key stored securely in .env:
+API keys are stored securely using a .env file.
+
+Example:
 
 VITE_API_KEY=your_api_key_here
-Important Dependencies
+📦 Key Dependencies
 "dependencies": {
   "react": "^18.x",
   "react-dom": "^18.x",
   "react-router-dom": "^6.x"
 }
+🧪 Testing
+
+Testing is implemented using Jest and React Testing Library.
+
+Covered Tests
+
+Authentication context
+
+Route rendering
+
+Protected route behavior
+
+Running Tests
+npm run test
+
+Tests verify:
+
+Authentication provider renders correctly
+
+Application routes load properly
+
+Protected routes block unauthorized users
+
 🚀 Deployment
-🌐 Live Deployment URL
+🌐 Live Application
 
 👉 https://your-deployment-url.vercel.app
 
-(Replace with your real URL)
+(Replace with your real link)
 
-🧩 Deployment Instructions (Vercel Example)
+Deployment Process (Vercel)
 
 Push project to GitHub
 
@@ -133,7 +243,7 @@ Go to vercel.com
 
 Import GitHub repository
 
-Framework preset: Vite
+Select framework preset: Vite
 
 Build command:
 
@@ -142,64 +252,87 @@ npm run build
 Output directory:
 
 dist
+🌎 Environment Configuration
+
+Create a .env file in the root directory:
+
+VITE_API_KEY=your_api_key_here
+
+This prevents API keys from being exposed in source code.
+
 📸 Screenshots
 
-Save screenshots inside a /screenshots folder and reference them like this:
+Create a /screenshots folder and add images of the application.
+
+Example:
 
 🏠 Home Page
 
-🎬 Movie Details Page
+screenshots/home.png
+
+🎬 Movie Details
+
+screenshots/movie-details.png
 
 🔐 Login Page
 
+screenshots/login.png
+
 🐛 Known Issues
 
-Ratings do not persist after page refresh (if no backend implemented)
+Ratings currently do not persist after page refresh
 
 Limited movie filtering options
 
-Mobile responsiveness needs minor improvements
+Mobile responsiveness could be improved
+
+Favorites are stored locally rather than in a database
 
 🔮 Future Enhancements
 
-🔄 Connect to full backend with database
+Backend integration with database
 
-💾 Persistent user accounts and ratings
+Persistent user accounts
 
-🔍 Advanced filtering & sorting
+Persistent movie ratings
 
-🎥 Movie trailers integration
+Advanced filtering and sorting
 
-🌙 Dark mode toggle
+Movie trailers integration
 
-⭐ Review commenting system
+Dark mode toggle
 
-📊 Rating analytics dashboard
+Review commenting system
+
+Rating analytics dashboard
 
 📚 What I Learned
 
+Through this project I learned:
+
 React component architecture
 
-State management patterns
+State management using Context
 
-API integration with fetch
+Authentication implementation
+
+Secure frontend practices
+
+API integration using fetch
 
 Routing with React Router
 
-Production deployment with Vite
+Testing with Jest and React Testing Library
 
-Debugging build errors
-
+Deployment using Vite and Vercel
 
 ✅ Final Submission Checklist
 
- All routes working
+✔ All routes working
+✔ Authentication implemented
+✔ Protected routes working
+✔ Build runs successfully (npm run build)
+✔ Application deployed
+✔ Security practices implemented
 
- Build runs without errors (npm run build)
-
- Deployed successfully
-
- Screenshots coming soon!
-
- (P.S. This Read me was made with help from AI, Though it is a summary of my own words and future prospects.)
-
+(Note: This README was generated with assistance from AI tools but reflects the project's actual implementation and future goals.)
