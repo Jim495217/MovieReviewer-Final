@@ -1,50 +1,49 @@
-import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
-export default function ReviewPage(){
+export default function ReviewPage() {
 
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const [story,setStory] = useState(3)
-  const [style,setStyle] = useState(3)
-  const [music,setMusic] = useState(3)
-  const [text,setText] = useState("")
-  const [message,setMessage] = useState("")
+  const [story, setStory] = useState(3);
+  const [style, setStyle] = useState(3);
+  const [music, setMusic] = useState(3);
+  const [text, setText] = useState("");
+  const [message, setMessage] = useState("");
 
-  function submitReview(){
+  function submitReview() {
 
-    if(text.trim() === ""){
-      setMessage("Please write a review first.")
-      return
+    if (text.trim() === "") {
+      setMessage("Please write a review first.");
+      return;
     }
 
-    const stored = localStorage.getItem("reviews")
-    const reviews = stored ? JSON.parse(stored) : {}
+    const stored = localStorage.getItem("reviews");
+    const reviews = stored ? JSON.parse(stored) : {};
 
-    if(!reviews[id]){
-      reviews[id] = []
+    if (!reviews[id]) {
+      reviews[id] = [];
     }
 
     reviews[id].push({
-      story,
-      style,
-      music,
+      story: Number(story),
+      style: Number(style),
+      music: Number(music),
       text,
       date: new Date().toLocaleDateString()
-    })
+    });
 
-    localStorage.setItem("reviews", JSON.stringify(reviews))
+    localStorage.setItem("reviews", JSON.stringify(reviews));
 
-    setText("")
-    setStory(3)
-    setStyle(3)
-    setMusic(3)
+    setText("");
+    setStory(3);
+    setStyle(3);
+    setMusic(3);
 
-    setMessage("Review saved successfully!")
+    setMessage("Review saved successfully!");
   }
 
-  return(
-
+  return (
     <div className="container">
 
       <h1>Write Review</h1>
@@ -55,7 +54,7 @@ export default function ReviewPage(){
         min="1"
         max="5"
         value={story}
-        onChange={(e)=>setStory(e.target.value)}
+        onChange={(e) => setStory(e.target.value)}
       />
       <p>{story} / 5</p>
 
@@ -65,7 +64,7 @@ export default function ReviewPage(){
         min="1"
         max="5"
         value={style}
-        onChange={(e)=>setStyle(e.target.value)}
+        onChange={(e) => setStyle(e.target.value)}
       />
       <p>{style} / 5</p>
 
@@ -75,7 +74,7 @@ export default function ReviewPage(){
         min="1"
         max="5"
         value={music}
-        onChange={(e)=>setMusic(e.target.value)}
+        onChange={(e) => setMusic(e.target.value)}
       />
       <p>{music} / 5</p>
 
@@ -83,22 +82,24 @@ export default function ReviewPage(){
 
       <textarea
         value={text}
-        onChange={(e)=>setText(e.target.value)}
+        onChange={(e) => setText(e.target.value)}
         placeholder="Write your thoughts about the movie..."
+        rows="6"
+        style={{ width: "100%" }}
       />
 
-      <br/><br/>
+      <br /><br />
 
       <button onClick={submitReview}>
         Submit Review
       </button>
 
       {message && (
-        <p style={{marginTop:"10px", color:"lightgreen"}}>
+        <p style={{ marginTop: "10px", color: "lightgreen" }}>
           {message}
         </p>
       )}
 
     </div>
-  )
+  );
 }

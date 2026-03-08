@@ -10,7 +10,7 @@ export async function getPopularMovies() {
   return res.json()
 }
 
-export async function getMovie(id){
+export async function fetchMovieDetails(id){
 
   const res = await fetch(
     `${BASE}/movie/${id}?api_key=${API_KEY}`

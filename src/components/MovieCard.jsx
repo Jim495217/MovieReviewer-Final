@@ -1,19 +1,19 @@
 import { Link } from "react-router-dom"
-import { useMovies } from "../context/MovieContext"
+import { useMovie } from "../context/MovieContext"
 
 const IMG = "https://image.tmdb.org/t/p/w500"
 
-export default function MovieCard({movie}){
+export default function MovieCard({ movie }) {
 
-  const { addFavorite } = useMovies()
+  const { addFavorite } = useMovie()
 
-  return(
+  return (
 
     <div className="movie-card">
 
       <Link to={`/movie/${movie.id}`}>
 
-        <img src={IMG + movie.poster_path}/>
+        <img src={IMG + movie.poster_path} alt={movie.title} />
 
       </Link>
 
@@ -22,8 +22,8 @@ export default function MovieCard({movie}){
         {movie.title}
 
         <button
-          style={{marginLeft:"10px"}}
-          onClick={()=>addFavorite(movie)}
+          style={{ marginLeft: "10px" }}
+          onClick={() => addFavorite(movie)}
         >
           ❤️
         </button>

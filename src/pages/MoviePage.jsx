@@ -1,114 +1,137 @@
-import { useParams, Link } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { getMovie, getTrailer } from "../api/tmdb"
+import { useParams, Link } from "react-router-dom"
+import { fetchMovieDetails } from "../api/tmdb"
+import { useAuth } from "../context/AuthContext"
+import { useMovie } from "../context/MovieContext"
+import ReviewCard from "../components/ReviewCard"
 
 const IMG = "https://image.tmdb.org/t/p/w500"
 
-export default function MoviePage(){
+function MoviePage() {
 
   const { id } = useParams()
 
-  const [movie,setMovie] = useState(null)
-  const [trailer,setTrailer] = useState(null)
+  const { isAdmin } = useAuth()
+  const { deleteMovie } = useMovie()
 
-  useEffect(()=>{
+  const [movie, setMovie] = useState(null)
+  const [reviews, setReviews] = useState([])
 
-    getMovie(id).then(setMovie)
-    getTrailer(id).then(setTrailer)
+  useEffect(() => {
 
-  },[id])
+    fetchMovieDetails(id).then(setMovie)
 
-  if(!movie) return <p>Loading...</p>
+    const stored = localStorage.getItem("reviews")
+    const allReviews = stored ? JSON.parse(stored) : {}
 
-  const reviews =
-    JSON.parse(localStorage.getItem("reviews") || "{}")[id] || []
+    setReviews(allReviews[id] || [])
 
-  return(
+  }, [id])
 
-    <div className="container">
+  const deleteReview = (index) => {
 
-      <div className="movie-detail">
+    const stored = localStorage.getItem("reviews")
+    const allReviews = stored ? JSON.parse(stored) : {}
 
-        <img src={IMG + movie.poster_path} />
+    const updated = reviews.filter((_, i) => i !== index)
 
-        <div>
+    allReviews[id] = updated
 
-          <h1>{movie.title}</h1>
+    localStorage.setItem("reviews", JSON.stringify(allReviews))
 
-          <p style={{marginTop:"10px"}}>
-            ⭐ {movie.vote_average}
-          </p>
+    setReviews(updated)
+  }
 
-          <p style={{marginTop:"20px"}}>
-            {movie.overview}
-          </p>
+  /* ⭐ Calculate Average User Rating */
+  const averageRating = () => {
 
-          {/* WRITE REVIEW BUTTON */}
-          <Link to={`/review/${movie.id}`}>
-            <button style={{marginTop:"20px"}}>
-              Write Review
-            </button>
-          </Link>
+    if (reviews.length === 0) return null
 
-        </div>
+    const total = reviews.reduce((sum, r) => {
 
-      </div>
+      const reviewAvg =
+        (Number(r.story) + Number(r.style) + Number(r.music)) / 3
 
-      {/* TRAILER */}
+      return sum + reviewAvg
 
-      {trailer && (
+    }, 0)
 
-        <iframe
-          width="700"
-          height="400"
-          src={`https://www.youtube.com/embed/${trailer.key}`}
-        />
+    return (total / reviews.length).toFixed(1)
+  }
 
+  if (!movie) return <p>Loading...</p>
+
+  return (
+
+    <div>
+
+      <h1>{movie.title}</h1>
+
+      {/* Movie Poster */}
+      <img
+        src={IMG + movie.poster_path}
+        alt={movie.title}
+        style={{ width: "300px", borderRadius: "10px" }}
+      />
+
+      {/* TMDB Rating */}
+      <p><strong>Rating:</strong> ⭐ {movie.vote_average}/10</p>
+
+      {/* ⭐ User Rating */}
+      {averageRating() && (
+        <p>
+          <strong>User Score:</strong> ⭐ {averageRating()} / 5
+          {" "}({reviews.length} review{reviews.length !== 1 && "s"})
+        </p>
       )}
 
-      {/* REVIEWS */}
+      {/* Description */}
+      <p>{movie.overview}</p>
 
-<h2 style={{marginTop:"40px"}}>User Reviews</h2>
+      {isAdmin && (
+        <button
+          onClick={() => deleteMovie(movie.id)}
+          style={{
+            background: "red",
+            color: "white",
+            padding: "10px",
+            marginBottom: "20px"
+          }}
+        >
+          Delete Movie
+        </button>
+      )}
 
-{reviews.length === 0 && <p>No reviews yet.</p>}
+      {/* Write Review Button */}
+      <Link to={`/review/${movie.id}`}>
+        <button
+          style={{
+            padding: "10px",
+            marginBottom: "20px",
+            background: "#333",
+            color: "white"
+          }}
+        >
+          Write a Review
+        </button>
+      </Link>
 
-{reviews.map((r,i)=>{
+      <h2>User Reviews</h2>
 
-  const avg = (
-    (Number(r.story) + Number(r.style) + Number(r.music)) / 3
-  ).toFixed(1)
-
-  return(
-
-    <div
-      key={i}
-      style={{
-        marginTop:"20px",
-        padding:"15px",
-        border:"1px solid #444",
-        borderRadius:"8px"
-      }}
-    >
-
-      <strong>Average Rating: ⭐ {avg} / 5</strong>
-
-      <p>Story: {r.story} / 5</p>
-      <p>Style: {r.style} / 5</p>
-      <p>Music: {r.music} / 5</p>
-
-      <p style={{marginTop:"10px"}}>
-        {r.text}
-      </p>
-
-      <small>{r.date}</small>
+      {reviews.length === 0 ? (
+        <p>No reviews yet.</p>
+      ) : (
+        reviews.map((review, index) => (
+          <ReviewCard
+            key={index}
+            review={review}
+            onDelete={() => deleteReview(index)}
+          />
+        ))
+      )}
 
     </div>
-
-  )
-
-})}
-
-    </div>
-
   )
 }
+
+export default MoviePage
