@@ -2,13 +2,46 @@ import { createContext, useContext, useState, useEffect } from "react"
 
 const AuthContext = createContext()
 
+function createToken(user) {
+  const payload = {
+    username: user.username,
+    role: user.role,
+    exp: Date.now() + 60 * 60 * 1000 // 1 hour
+  }
+
+  return btoa(JSON.stringify(payload))
+}
+
+function decodeToken(token) {
+  try {
+    return JSON.parse(atob(token))
+  } catch {
+    return null
+  }
+}
+
 export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user")
-    if (storedUser) setUser(JSON.parse(storedUser))
+
+    const token = localStorage.getItem("token")
+
+    if (!token) return
+
+    const decoded = decodeToken(token)
+
+    if (!decoded || decoded.exp < Date.now()) {
+      localStorage.removeItem("token")
+      return
+    }
+
+    setUser({
+      username: decoded.username,
+      role: decoded.role
+    })
+
   }, [])
 
   const login = (username, password) => {
@@ -23,10 +56,14 @@ export function AuthProvider({ children }) {
       throw new Error("Invalid username or password")
     }
 
-    localStorage.setItem("token", "fake-jwt-token")
-    localStorage.setItem("user", JSON.stringify(foundUser))
+    const token = createToken(foundUser)
 
-    setUser(foundUser)
+    localStorage.setItem("token", token)
+
+    setUser({
+      username: foundUser.username,
+      role: foundUser.role
+    })
   }
 
   const register = (username, password) => {
@@ -50,7 +87,6 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem("token")
-    localStorage.removeItem("user")
     setUser(null)
   }
 
